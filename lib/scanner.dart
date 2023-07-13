@@ -51,9 +51,19 @@ class _QRCodeScannerPageState extends State<QRCodeScannerPage> {
       if (dateNow.difference(lastQrCodeReadDate).inSeconds < 3) return;
          controller.pauseCamera(); 
       final url=Uri.https('attendance-4d5c8-default-rtdb.asia-southeast1.firebasedatabase.app','attendees.json');
-      http.post(url,headers: {
+      String? code = scanData.code;
+      if(code!=null){
+      List<String> data = code.split(',');
+      if (data.length == 2) {
+          String name = data[0].trim(); // Extract the name
+          String email = data[1].trim(); 
+
+          http.post(url,headers: {
         'Content-Type':'application/json',
-      },body: json.encode({'Name':scanData.code}));
+      },body: json.encode({'Name':name,'Email':email}));
+      }
+      }
+      
       
       Navigator.pushNamed(context, '/');
 
